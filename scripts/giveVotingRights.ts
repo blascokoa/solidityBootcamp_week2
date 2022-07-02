@@ -2,7 +2,7 @@ import { Contract, ethers } from "ethers";
 import "dotenv/config";
 import * as ballotJson from "../../artifacts/contracts/CustomBallot.sol/CustomBallot.json";
 // eslint-disable-next-line node/no-missing-import
-import { Ballot } from "../../typechain";
+import { CustomBallot } from "../../typechain";
 
 // This key is already public on Herong's Tutorial Examples - v1.03, by Dr. Herong Yang
 // Do never expose your keys like this
@@ -47,11 +47,11 @@ async function main() {
   console.log(
     `Attaching ballot contract interface to address ${ballotAddress}`
   );
-  const ballotContract: Ballot = new Contract(
+  const ballotContract: CustomBallot = new Contract(
     ballotAddress,
     ballotJson.abi,
     signer
-  ) as Ballot;
+  ) as CustomBallot;
   const chairpersonAddress = await ballotContract.chairperson();
   if (chairpersonAddress !== signer.address)
     throw new Error("Caller is not the chairperson for this contract");

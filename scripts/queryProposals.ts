@@ -2,7 +2,7 @@ import { Contract, ethers } from "ethers";
 import "dotenv/config";
 import * as ballotJson from "../../artifacts/contracts/CustomBallot.sol/CustomBallot.json";
 // eslint-disable-next-line node/no-missing-import
-import { Ballot } from "../../typechain";
+import { CustomBallot } from "../../typechain/CustomBallot";
 
 // This key is already public on Herong's Tutorial Examples - v1.03, by Dr. Herong Yang
 // Do never expose your keys like this
@@ -47,11 +47,11 @@ async function main() {
   console.log(
     `Attaching ballot contract interface to address ${ballotAddress}`
   );
-  const ballotContract: Ballot = new Contract(
+  const ballotContract: CustomBallot = new Contract(
     ballotAddress,
     ballotJson.abi,
     signer
-  ) as Ballot;
+  ) as CustomBallot;
 
   // todo here change into using the queryProposals read function
   const chairpersonAddress = await ballotContract.chairperson();
@@ -68,4 +68,3 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
-
