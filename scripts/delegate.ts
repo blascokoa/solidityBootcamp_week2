@@ -70,7 +70,7 @@ async function main() {
 
   const voters = [signer2, signer3, signer4];
 
-  // we assume wallets got enought balance.
+  // we assume wallets got enough balance.
   console.log("-------ALLOWANCE CHECK AND APPROVAL-------");
   for (const voter of voters) {
     const { tokenContract, ballotContract } = await attachContracts(
