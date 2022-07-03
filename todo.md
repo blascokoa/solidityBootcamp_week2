@@ -1,7 +1,7 @@
 # entry
 - [x] Form groups of 3 to 5 students
 # coding
-- [ ] Complete the contracts together
+- [x] Complete the contracts together
 
 Structure scripts to
 - [ ] Deploy everything
