@@ -23,7 +23,7 @@ async function main() {
   console.log(`Using address ${wallet.address}`);
   const provider = ethers.providers.getDefaultProvider("ropsten", {
     etherscan: process.env.ETHERSCAN_API_KEY,
-    infura: process.env.INFURA_URL,
+    infura: process.env.INFURA_API_KEY,
   });
   const signer = wallet.connect(provider);
   const balanceBN = await signer.getBalance();
