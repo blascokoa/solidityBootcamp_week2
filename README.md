@@ -1,3 +1,22 @@
+# EncodeClub - Weekend Project #2
+
+### Files:
+- ./scripts/delegate.ts -> Delegate votes to other wallets
+- ./scripts/deployAll.js -> Deploy the token contract and the ballot contract, take as arguments the proposals
+- ./scripts/deployBallot.js -> Deploy the ballot contract, take as arguments the token contract and the proposals
+- ./scripts/deployToken.js -> Deploy the token contract
+- ./scripts/ethFund -> Send ETH to the wallets that will vote and delegate.
+- ./scripts/mint.js -> SEND ERC20 to the wallets for the vote and delegate purpose.
+- ./scripts/queryProposal -> Query the proposal of the given contract address.
+- ./scripts/updateReference -> Executed by the owner of the ballot contract, update the referenceBlock for snapshot purposes.
+- ./scripts/vote -> Wallets vote for a proposal, take as argument the proposal number to vote.
+
+### Collaborators:
+- Blasco#9303
+- Joboa#5235
+- Fenmund#9350
+
+
 # Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
