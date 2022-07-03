@@ -62,6 +62,7 @@ async function main() {
     throw new Error("Invalid ballot contract address");
   }
 
+  // eslint-disable-next-line no-unused-vars
   const signer = wallet.connect(provider);
   const signer2 = wallet2.connect(provider);
   const signer3 = wallet3.connect(provider);
