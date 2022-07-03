@@ -18,11 +18,11 @@ function setupProvider() {
         }
       : process.env.INFURA_API_KEY
     : "";
-  const options = {
-    alchemy: process.env.ALCHEMY_API_KEY,
+
+  const provider = ethers.providers.getDefaultProvider("ropsten", {
+    etherscan: process.env.ETHERSCAN_API_KEY,
     infura: infuraOptions,
-  };
-  const provider = ethers.providers.getDefaultProvider("ropsten", options);
+  });
   return provider;
 }
 
@@ -42,10 +42,8 @@ async function main() {
   }
   if (process.argv.length < 3) throw new Error("Ballot address missing");
   const ballotAddress = process.argv[2];
-  if (process.argv.length < 4) throw new Error("Voter address missing");
-  const voterAddress = process.argv[3];
   console.log(
-    `Attaching ballot contract interface to address ${ballotAddress}`
+    `Attaching custom ballot contract interface to address ${ballotAddress}`
   );
   const ballotContract: CustomBallot = new Contract(
     ballotAddress,
@@ -53,15 +51,21 @@ async function main() {
     signer
   ) as CustomBallot;
 
-  // todo here change into using the queryProposals read function
-  const chairpersonAddress = await ballotContract.chairperson();
-  if (chairpersonAddress !== signer.address)
-    throw new Error("Caller is not the chairperson for this contract");
-  console.log(`Giving right to vote to ${voterAddress}`);
-  const tx = await ballotContract.giveRightToVote(voterAddress);
-  console.log("Awaiting confirmations");
-  await tx.wait();
-  console.log(`Transaction completed. Hash: ${tx.hash}`);
+  try {
+    let i: number = 0;
+    let name: string = "";
+    while (true) {
+      const proposal = await ballotContract.proposals(i);
+      name = ethers.utils.parseBytes32String(proposal.name);
+      console.log(
+        ` |-Proposal ${i}: ${name} - Votes: ${proposal.voteCount.toString()}`
+      );
+      i++;
+    }
+  } catch (e) {
+    console.log("End of proposals array reached...");
+    console.log("--------------------------------------");
+  }
 }
 
 main().catch((error) => {
