@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.7.0 <0.9.0;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 interface IERC20Votes {
     function getPastVotes(address, uint256) external view returns (uint256);
 }
 
-contract CustomBallot {
+contract CustomBallot is Ownable{
     event Voted(
         address indexed voter,
         uint256 indexed proposal,
@@ -58,5 +60,9 @@ contract CustomBallot {
         votingPower_ =
             voteToken.getPastVotes(msg.sender, referenceBlock) -
             spentVotePower[msg.sender];
+    }
+
+    function updateReferenceBlock() external onlyOwner {
+        referenceBlock = block.number;
     }
 }
