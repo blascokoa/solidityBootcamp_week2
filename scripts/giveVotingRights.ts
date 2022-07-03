@@ -1,8 +1,8 @@
 import { Contract, ethers } from "ethers";
 import "dotenv/config";
-import * as ballotJson from "../../artifacts/contracts/CustomBallot.sol/CustomBallot.json";
+import * as ballotJson from "../artifacts/contracts/CustomBallot.sol/CustomBallot.json";
 // eslint-disable-next-line node/no-missing-import
-import { CustomBallot } from "../../typechain";
+import { CustomBallot } from "../typechain";
 
 // This key is already public on Herong's Tutorial Examples - v1.03, by Dr. Herong Yang
 // Do never expose your keys like this
