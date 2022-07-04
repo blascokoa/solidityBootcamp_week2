@@ -37,20 +37,18 @@ async function main() {
     infura: process.env.INFURA_API_KEY,
   });
 
-  const ballotContractAddress = process.argv.slice(4)[0];
+  const ballotContractAddress = process.argv.slice(2)[0];
   if (!ballotContractAddress.startsWith("0x")) {
     throw new Error("Invalid ballot contract address");
   }
 
-  // eslint-disable-next-line no-unused-vars
-  const signer = wallet.connect(provider);
   const signer2: ethers.Wallet = wallet2.connect(provider);
   const signer3: ethers.Wallet = wallet3.connect(provider);
   const signer4: ethers.Wallet = wallet4.connect(provider);
 
   const voters = [signer2, signer3, signer4];
 
-  let readArgCounter = 1;
+  let readArgCounter = 3;
   for (const voter of voters) {
     const contract: CustomBallot = new ethers.Contract(
       ballotContractAddress,
@@ -60,7 +58,21 @@ async function main() {
     const proposalNumber: string = process.argv.slice(readArgCounter)[0];
     readArgCounter++;
     const power = await contract.votingPower();
-    contract.vote(proposalNumber, power);
+    if (Number(ethers.utils.formatUnits(power, 18)) > 0) {
+      console.log(
+        "user voted",
+        voter.address,
+        proposalNumber,
+        ethers.utils.formatUnits(power, 18)
+      );
+      const tx = await contract.vote(proposalNumber, power);
+      const receipt = await tx.wait();
+      console.log(
+        `${voter.address} Voted for proposal ${proposalNumber} - power: ${power} - Tx Hash: ${receipt.transactionHash}`
+      );
+    } else {
+      console.log(`${voter.address} has no voting power`);
+    }
   }
   process.exit(0);
 }
