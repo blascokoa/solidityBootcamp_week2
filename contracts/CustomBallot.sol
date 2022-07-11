@@ -35,6 +35,10 @@ contract CustomBallot is Ownable{
         referenceBlock = block.number;
     }
 
+    function updateReferenceBlock() external onlyOwner {
+        referenceBlock = block.number;
+    }
+
     function vote(uint256 proposal, uint256 amount) external {
         uint256 votingPowerAvailable = votingPower();
         require(votingPowerAvailable >= amount, "Has not enough voting power");
@@ -65,9 +69,5 @@ contract CustomBallot is Ownable{
         votingPower_ =
             voteToken.getPastVotes(msg.sender, referenceBlock) -
             spentVotePower[msg.sender];
-    }
-
-    function updateReferenceBlock() external onlyOwner {
-        referenceBlock = block.number;
     }
 }
