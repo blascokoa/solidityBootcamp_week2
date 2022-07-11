@@ -27,7 +27,8 @@ contract CustomBallot is Ownable{
     uint256 public referenceBlock;
 
     constructor(bytes32[] memory proposalNames, address _voteToken) {
-        for (uint256 i = 0; i < proposalNames.length; i++) {
+        uint256 proposalsLength = proposals.length;
+        for (uint256 i = 0; i < proposalsLength; i++) {
             proposals.push(Proposal({name: proposalNames[i], voteCount: 0}));
         }
         voteToken = IERC20Votes(_voteToken);
@@ -44,12 +45,14 @@ contract CustomBallot is Ownable{
 
     function winningProposal() public view returns (uint256 winningProposal_) {
         uint256 winningVoteCount = 0;
-        for (uint256 p = 0; p < proposals.length; p++) {
+        uint256 proposalsLength = proposals.length;
+        for (uint256 p = 0; p < proposalsLength; p++) {
             if (proposals[p].voteCount > winningVoteCount) {
                 winningVoteCount = proposals[p].voteCount;
                 winningProposal_ = p;
             }
         }
+        return winningProposal_;
     }
 
     function winnerName() external view returns (bytes32 winnerName_) {
