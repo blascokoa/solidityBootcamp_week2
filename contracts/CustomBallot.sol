@@ -7,7 +7,11 @@ interface IERC20Votes {
     function getPastVotes(address, uint256) external view returns (uint256);
 }
 
+/// @title Custom Ballot
+/// @author David Blasco
+/// @dev This contract is used to create a custom ballot.
 contract CustomBallot is Ownable{
+    /// @dev broadcasted event when an user votes
     event Voted(
         address indexed voter,
         uint256 indexed proposal,
@@ -15,6 +19,7 @@ contract CustomBallot is Ownable{
         uint256 proposalVotes
     );
 
+    /// @dev Proposal dataType structure
     struct Proposal {
         bytes32 name;
         uint256 voteCount;
@@ -26,14 +31,22 @@ contract CustomBallot is Ownable{
     IERC20Votes public voteToken;
     uint256 public referenceBlock;
 
+    /// @dev Constructor of the ballot, require a list with the proposals and the allowed voting contract address.
     constructor(bytes32[] memory proposalNames, address _voteToken) {
-        for (uint256 i = 0; i < proposalNames.length; i++) {
+        uint256 proposalsLength = proposals.length;
+        for (uint256 i = 0; i < proposalsLength; i++) {
             proposals.push(Proposal({name: proposalNames[i], voteCount: 0}));
         }
         voteToken = IERC20Votes(_voteToken);
         referenceBlock = block.number;
     }
 
+    /// @dev Update the reference block for count token balances from that block and onwards.
+    function updateReferenceBlock() external onlyOwner {
+        referenceBlock = block.number;
+    }
+
+    /// @dev Function to vote for a proposal.
     function vote(uint256 proposal, uint256 amount) external {
         uint256 votingPowerAvailable = votingPower();
         require(votingPowerAvailable >= amount, "Has not enough voting power");
@@ -42,27 +55,30 @@ contract CustomBallot is Ownable{
         emit Voted(msg.sender, proposal, amount, proposals[proposal].voteCount);
     }
 
+    /// @dev Function to get the winning proposal.
     function winningProposal() public view returns (uint256 winningProposal_) {
         uint256 winningVoteCount = 0;
-        for (uint256 p = 0; p < proposals.length; p++) {
-            if (proposals[p].voteCount > winningVoteCount) {
-                winningVoteCount = proposals[p].voteCount;
+        uint256 proposalsLength = proposals.length;
+        uint256 voteCount = 0;
+        for (uint256 p = 0; p < proposalsLength; p++) {
+            voteCount = proposals[p].voteCount;
+            if (voteCount > winningVoteCount) {
+                winningVoteCount = voteCount;
                 winningProposal_ = p;
             }
         }
+        return winningProposal_;
     }
 
+    /// @dev Returns the name of the winning proposal.
     function winnerName() external view returns (bytes32 winnerName_) {
         winnerName_ = proposals[winningProposal()].name;
     }
 
+    /// @dev Returns the voting power of the user.
     function votingPower() public view returns (uint256 votingPower_) {
         votingPower_ =
             voteToken.getPastVotes(msg.sender, referenceBlock) -
             spentVotePower[msg.sender];
-    }
-
-    function updateReferenceBlock() external onlyOwner {
-        referenceBlock = block.number;
     }
 }
