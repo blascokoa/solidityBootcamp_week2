@@ -46,9 +46,11 @@ contract CustomBallot is Ownable{
     function winningProposal() public view returns (uint256 winningProposal_) {
         uint256 winningVoteCount = 0;
         uint256 proposalsLength = proposals.length;
+        uint256 voteCount = 0;
         for (uint256 p = 0; p < proposalsLength; p++) {
-            if (proposals[p].voteCount > winningVoteCount) {
-                winningVoteCount = proposals[p].voteCount;
+            voteCount = proposals[p].voteCount;
+            if (voteCount > winningVoteCount) {
+                winningVoteCount = voteCount;
                 winningProposal_ = p;
             }
         }
